@@ -8,12 +8,21 @@ const getDemoPath = () => {
   return 'puterjs-demo.txt'
 }
 
+const getCopyPath = (demoPath: string) => {
+  if (puter.appDataPath && puter.path?.join) {
+    return puter.path.join(puter.appDataPath, 'puterjs-demo-clone.txt')
+  }
+  return demoPath.replace(/\.txt$/, '-clone.txt')
+}
+
 const getErrorMessage = (error: unknown) => error instanceof Error ? error.message : String(error)
 
 export const FileSystemExample = () => {
-  const demoPath = useMemo(getDemoPath, [])
+  const demoPath = useMemo(() => getDemoPath(), [])
+  const copyPath = useMemo(() => getCopyPath(demoPath), [demoPath])
   const [status, setStatus] = useState<string>('Idle')
   const [fileContents, setFileContents] = useState<string>('')
+  const [copyContents, setCopyContents] = useState<string>('')
 
   const writeSampleFile = async () => {
     setStatus('Writing sample file...')
@@ -37,6 +46,19 @@ export const FileSystemExample = () => {
     }
   }
 
+  const cloneFile = async () => {
+    setStatus('Cloning file...')
+    try {
+      await puter.fs.copy(demoPath, copyPath)
+      const blob = await puter.fs.read(copyPath)
+      const text = await blob.text()
+      setCopyContents(text)
+      setStatus(`Cloned to ${copyPath}`)
+    } catch (error) {
+      setStatus(`Clone failed: ${getErrorMessage(error)}`)
+    }
+  }
+
   return (
     <section className="card stack">
       <div className="stack">
@@ -47,6 +69,7 @@ export const FileSystemExample = () => {
       <div className="actions">
         <button onClick={writeSampleFile}>Write file</button>
         <button onClick={readSampleFile}>Read file</button>
+        <button onClick={cloneFile}>Clone file</button>
       </div>
 
       <p className="status">Status: {status}</p>
@@ -55,6 +78,14 @@ export const FileSystemExample = () => {
         <div className="callout">
           <strong>File contents</strong>
           <pre>{fileContents}</pre>
+        </div>
+      )}
+
+      {copyContents && (
+        <div className="callout">
+          <strong>Clone contents</strong>
+          <p className="status">Path: <code>{copyPath}</code></p>
+          <pre>{copyContents}</pre>
         </div>
       )}
     </section>
