@@ -2,6 +2,43 @@
 
 This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
 
+## Node.js Version
+
+This project requires **Node.js v24.x** (LTS "Krypton"). The recommended way to manage Node.js versions is with [nvm](https://github.com/nvm-sh/nvm).
+
+A `.nvmrc` file is included in the repository. To use the correct Node.js version, run:
+
+```sh
+nvm use
+```
+
+If you haven't installed that version yet:
+
+```sh
+nvm install
+```
+
+Example output:
+
+```sh
+$ nvm use
+Found '/path/to/project/.nvmrc' with version <24>
+Now using node v24.13.1 (npm v11.8.0)
+```
+
+To set Node.js v24 as your default:
+
+```sh
+nvm alias default 24
+```
+
+You can also install the current LTS directly using the LTS alias:
+
+```sh
+nvm install lts/krypton
+nvm use lts/krypton
+```
+
 Currently, two official plugins are available:
 
 - [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
